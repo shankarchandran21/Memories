@@ -1,9 +1,10 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { TextField,Button,Typography,Paper } from '@material-ui/core'
 import useStyles from './styles'
 import FileBase from 'react-file-base64'
-import { useDispatch } from 'react-redux'
-import { createPostData } from '../../features/posts/posts'
+import { useDispatch, useSelector } from 'react-redux'
+import { createPostData, updatePost, updatePostData } from '../../features/posts/posts'
+
 
 function Forms() {
     
@@ -14,13 +15,39 @@ function Forms() {
       tags:"",
       selectFile:""
     })
+    const {updateId,posts} = useSelector((state)=>state.posts)
+    console.log(updateId)
+
+  
+
+    useEffect(()=>{
+        if(updateId){
+          const findUpdateData = posts.find(({_id})=>_id === updateId)
+          setPostData(findUpdateData)
+        }else{
+            
+        }
+    },[updateId])
+
     const dispatch = useDispatch()
     const classes = useStyles()
     const handleSubmit = (e)=>{
 
       e.preventDefault()
-    dispatch((createPostData(postData)))
-
+      if(updateId){
+          console.log(postData)
+          dispatch(updatePostData(postData,updateId))
+          dispatch(updatePost(postData))
+      }else{
+        dispatch(createPostData(postData))
+      }
+      setPostData({
+        creator:"",
+        title:"",
+        message:"",
+        tags:"",
+        selectFile:""
+      })
 
     }
     const clear =()=>{
@@ -30,7 +57,7 @@ function Forms() {
   return (
     <Paper className={classes.paper}>
         <form autoComplete='off' noValidate className={`${classes.root} ${classes.form}`} onSubmit={handleSubmit}>
-          <Typography variant='h6'>Creating a Memory</Typography>
+          <Typography variant='h6'>{updateId?'Editing':'Creating'} a Memory</Typography>
           <TextField 
            value={postData.creator}
            onChange={(e)=>setPostData({...postData, creator:e.target.value})}
@@ -54,13 +81,13 @@ function Forms() {
            fullWidth/>
             <TextField 
            value={postData.tags}
-           onChange={(e)=>setPostData({...postData, tags:e.target.value})}
+           onChange={(e) => setPostData({ ...postData, tags: e.target.value.split(',') })}
            name='tags' 
            variant='outlined'
            label="tags"
            fullWidth/>
            <div className={classes.fileInput}>
-                <FileBase type='file' multiple={false} onDone={({base64})=>setPostData({...postData,selectFile:base64})}/>
+                <FileBase type='file'  multiple={false} onDone={({base64})=>setPostData({...postData,selectFile:base64})}/>
            </div>
            <Button
               className={classes.buttonSubmit}
