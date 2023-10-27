@@ -5,7 +5,8 @@ import ThumbUpAltIcon from '@material-ui/icons/ThumbUpAlt';
 import DeleteIcon from '@material-ui/icons/Delete';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import moment from 'moment'
-import posts, { deletePost, deletePostData, updatePostId } from '../../../features/posts/posts';
+import { deletePost, updatePostId,addLike } from '../../../features/posts/posts';
+import{createPostData,likeCountData,updatePostData,deletePostData} from '../../../features/posts/asyncAction'
 import {useDispatch} from 'react-redux'
 function Post({creator,title,message,tags,selectFile,createdAt,likeCount,_id}) {
  
@@ -27,12 +28,15 @@ function Post({creator,title,message,tags,selectFile,createdAt,likeCount,_id}) {
         </div>
         <Typography className={classes.title} gutterBottom variant="h5" component="h2">{title}</Typography>
         <CardContent>
-           <Typography className={classes.title} variant="h6" gutterBottom>{message}</Typography>
+           <Typography className={classes.title} variant="body2" color="textSecondary" component='p'>{message}</Typography>
         </CardContent>
         <CardActions className={classes.cardActions}>
-            <Button size='small' color='primary' onClick={()=>{}}>
+            <Button size='small' color='primary' onClick={()=>{
+                dispatch(addLike(_id))
+                dispatch(likeCountData({id:_id,count:likeCount+1}))
+            }}>
                 <ThumbUpAltIcon fontSize='small'/>
-                Like
+                &nbsp; Like &nbsp;
                 {likeCount}
             </Button>
             <Button size='small' color='primary' onClick={()=>{

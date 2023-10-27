@@ -3,7 +3,8 @@ import { TextField,Button,Typography,Paper } from '@material-ui/core'
 import useStyles from './styles'
 import FileBase from 'react-file-base64'
 import { useDispatch, useSelector } from 'react-redux'
-import { createPostData, updatePost, updatePostData } from '../../features/posts/posts'
+import { createPostData,updatePostData} from '../../features/posts/asyncAction'
+import { updatePost } from '../../features/posts/posts'
 
 
 function Forms() {

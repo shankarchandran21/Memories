@@ -1,52 +1,5 @@
-import {createSlice,createAsyncThunk} from '@reduxjs/toolkit'
-
-import * as api from '../../api'
-
-
-
-export const getPosts = createAsyncThunk('posts/getPosts',async (thunkAPI)=>{
-        try {
-            const resp = await api.fetchPostsAPI()
-            
-            return resp.data
-        } catch (error) {
-            return  thunkAPI.rejectWithValue('There was an error....')
-        }
-})
-
-
-
-export const createPostData = createAsyncThunk('posts/createPost',async (newPost,thunkAPI)=>{
-    try {
-        const {data}= await api.createPostAPI(newPost)
-        return data
-    } catch (error) {
-        return  thunkAPI.rejectWithValue('There was an error....')
-    }
-})
-
-
-export const updatePostData = createAsyncThunk('posts/updatePost',async (changesPost,thunkAPI)=>{
-        try {
-            console.log(changesPost._id)
-         
-            const {data}= await api.updatePostAPI(changesPost,changesPost._id)
-            return data
-        } catch (error) {
-            return  thunkAPI.rejectWithValue('There was an error....')
-        }
-})
-
-
-export const deletePostData = createAsyncThunk('posts/deletePost',async (deleteId,thunkAPI)=>{
-    try {
-        console.log(deleteId)
-        const {data}= await api.deletePostAPI(deleteId)
-        return data
-    } catch (error) {
-        return  thunkAPI.rejectWithValue('There was an error....')
-    }
-})
+import {createSlice} from '@reduxjs/toolkit'
+import { getPosts,createPostData,likeCountData,updatePostData,deletePostData } from './asyncAction'
 
 
 
@@ -78,6 +31,10 @@ const postSlice = createSlice({
             deletePost:(state,action)=>{
                state.posts = state.posts.filter(({_id})=>_id !== action.payload)
                
+            },
+            addLike:(state,action)=>{
+                let findUpdateLike =  state.posts.find(({_id})=>_id == action.payload)
+                findUpdateLike.likeCount = findUpdateLike.likeCount + 1
             }
     },
     extraReducers:(builder)=>{
@@ -136,9 +93,25 @@ const postSlice = createSlice({
         builder.addCase(deletePostData.rejected,(state,action)=>{
                 state.isLoading = true
         })
+
+        //addLike
+        builder.addCase(likeCountData.pending,(state)=>{
+          
+        })
+
+        builder.addCase(likeCountData.fulfilled,(state,action)=>{
+           
+
+        })
+        builder.addCase(likeCountData.rejected,(state,action)=>{
+                state.isLoading = true
+        })
+
+
+
     }
 })
 
-export const {updatePostId,updatePost,deletePost} = postSlice.actions
+export const {updatePostId,updatePost,deletePost,addLike} = postSlice.actions
 
 export default postSlice.reducer

@@ -5,7 +5,7 @@ import Posts from './Components/Posts/Posts'
 import Forms from './Components/Forms/Forms'
 import useStyles from './styles'
 import { useDispatch, useSelector } from 'react-redux'
-import { getPosts } from './features/posts/posts'
+import { getPosts } from './features/posts/asyncAction'
 import { useEffect } from 'react'
 
 
