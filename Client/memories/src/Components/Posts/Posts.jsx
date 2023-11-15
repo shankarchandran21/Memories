@@ -11,7 +11,6 @@ function Posts() {
     return<CircularProgress/>
   }
 
-console.log(posts)
 
   return (
       <Grid className={classes.container} container alignItems='stretch' spacing={3}>

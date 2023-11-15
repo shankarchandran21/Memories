@@ -17,7 +17,7 @@ function Forms() {
       selectFile:""
     })
     const {updateId,posts} = useSelector((state)=>state.posts)
-    console.log(updateId)
+  
 
   
 
